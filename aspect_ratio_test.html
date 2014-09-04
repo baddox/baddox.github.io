@@ -48,8 +48,10 @@
       }
 
       .thumbnail {
-        max-width: 70px;
-        max-height: 70px;
+        max-width: 100px;
+        max-height: 100px;
+        margin-right: 8px;
+        cursor: pointer;
       }
 
       span.name {
@@ -147,17 +149,26 @@
         var containerHeight = this.props.info.phone.height;
 
         var margin;
+        var marginTop;
 
         if (imageWidth > this.props.info.phone.width) {
           imageWidth = this.props.info.phone.width;
           imageHeight = Math.round(this.props.info.image.height * imageWidth / this.props.info.image.width);
+          console.log("imageHeight", this.props.info.image.height, imageWidth, this.props.info.image.width);
           containerHeight = imageHeight + this.props.info.bar.height;
-          margin = ((this.props.info.phone.height - containerHeight) / 4) + "px" + " 0px";
+          marginTop = ((this.props.info.phone.height - containerHeight) / 2) + "px";
         } else {
           margin = "auto";
         }
 
-        var containerStyles = {height: containerHeight, width: imageWidth, margin: margin};
+        var containerStyles = {height: containerHeight, width: imageWidth};
+
+        if (marginTop) {
+          containerStyles["margin-top"] = marginTop;
+        } else {
+          containerStyles.margin = margin;
+        }
+        
         var imageStyles = {height: imageHeight, width: imageWidth, "background-image": "url('" + INFO.image.url + "')"};
         var barStyles = {height: this.props.info.bar.height, width: imageWidth};
 
@@ -178,9 +189,9 @@
                 </div>
               </div>
             </div>
-            <Controls />
-              <PhoneSelection />
-                <ImageSelection />
+            <Controls></Controls>
+            <PhoneSelection></PhoneSelection>
+            <ImageSelection></ImageSelection>
           </div>
         );
       }
@@ -190,8 +201,8 @@
       handleClick: function() {
         INFO.image = {
           url: this.props.url,
-          width: this.props.width / 2,
-          height: this.props.height / 2
+          width: this.props.width,
+          height: this.props.height
         }
         rerender();
       },
@@ -265,12 +276,18 @@
         return function(event) {
           var val = event.target.value;
 
-          if (param === "image.height") {
-            INFO.image.height = val;
+          if (param === "phone.height") {
+            INFO.phone.height = val;
+            INFO.phone.name = "Custom";
           }
 
-          if (param === "image.width") {
-            INFO.image.width = val;
+          if (param === "phone.width") {
+            INFO.phone.width = val;
+            INFO.phone.name = "Custom";
+          }
+
+          if (param === "bar.height") {
+            INFO.bar.height = parseInt(val);
           }
 
           rerender();
@@ -281,10 +298,13 @@
         return (
           <div className="controls">
             <p>
-              Image width: <input type="range" name="quantity" min="400" max="2000" value={INFO.image.width} onChange={this.helper("image.width")} /> {INFO.image.width}
+              Phone width: <input type="range" name="quantity" min="5" max="2000" value={INFO.phone.width} onChange={this.helper("phone.width")} /> {INFO.phone.width}
             </p>
             <p>
-              Image height: <input type="range" name="quantity" min="400" max="2000" value={INFO.image.height} onChange={this.helper("image.height")} /> {INFO.image.height}
+              Phone height: <input type="range" name="quantity" min="5" max="2000" value={INFO.phone.height} onChange={this.helper("phone.height")} /> {INFO.phone.height}
+            </p>
+            <p>
+              Bottom bar height: <input type="range" name="quantity" min="5" max="200" value={INFO.bar.height} onChange={this.helper("bar.height")} /> {INFO.bar.height}
             </p>
           </div>
         );
