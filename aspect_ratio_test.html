@@ -1,0 +1,304 @@
+<html>
+  <head>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/react/0.11.1/JSXTransformer.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/react/0.11.1/react-with-addons.js"></script>
+
+    <style>
+      html {
+        padding: 10px;
+        background-color: #555;
+      }
+
+      .phonescreen {
+        background-color: #eee;
+        border: 4px solid black;
+        overflow: auto;
+      }
+
+      .container {
+        background-color: #ccc;
+      }
+
+      .creative {
+        background-color: #aba;
+      }
+
+      .bar {
+        background-color: #686;
+      }
+
+      .controls {
+        margin-top: 40px;
+      }
+
+      .image {
+        background-size: 100% 100%;
+      }
+
+      span.dim {
+        background-color: rgba(00, 0, 0, 0.5);
+        color: white;
+        font-size: 12px;
+        font-family: monospace;
+        padding: 2px;
+        line-height: 18px;
+        position: relative;
+        top: 6px;
+        left: 6px;
+      }
+
+      .thumbnail {
+        max-width: 70px;
+        max-height: 70px;
+      }
+
+      span.name {
+        margin: 4px;
+        color: white;
+        font-weight: normal;
+      }
+
+      span.dimensions {
+        margin-left: 8px;
+        color: white;
+      }
+
+      button.phone {
+        margin-right: 6px;
+        font-size: 12px;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div id="everything"></div>
+  </body>
+
+
+  <script type="text/jsx">
+    /** @jsx React.DOM */
+
+    var PHONES = [
+      ["iPhone 5 Landscape", 1136, 640],
+      ["iPhone 5 Portrait", 640, 1136],
+
+      ["iPhone 4s Landscape", 960, 640],
+      ["iPhone 4s Portrait", 640, 960],
+
+      ["iPad Landscape", 2048, 1536],
+      ["iPad Portrait", 1536, 2048],
+
+      ["Galaxy S4 Landscape", 1920, 1080],
+      ["Galaxy S4 Portrait", 1080, 1920],
+
+      ["Droid Incredible Landscape", 800, 480],
+      ["Droid Incredible Portrait", 480, 800],
+    ];
+
+    var INFO = {
+      phone: {
+        name: "iPhone 5 Landscape",
+        width: 1136,
+        height: 640
+      },
+      image: {
+        url: "http://developers.heyzap.com/imgsrv/img:9cd616cbe4ba3c0a16e0f490e0a672f1",
+        width: 780,
+        height: 720
+      },
+      bar: {
+        height: 100 / 2
+      },
+    };
+
+    var IMAGES = [
+      ["https://s3.amazonaws.com/uploads.hipchat.com/1658/29538/QX7jni7e3hMHK4J/skinny.jpg", 188, 325],
+      ["https://s3.amazonaws.com/uploads.hipchat.com/1658/29538/FqPmunEb2QVrOyu/fat.jpg", 800, 303],
+
+      ["http://developers.heyzap.com/imgsrv/img:9cd616cbe4ba3c0a16e0f490e0a672f1", 1280, 624],
+      ["http://developers.heyzap.com/imgsrv/img:6eda5ea19dd9f3f41b6ffcba846bd185", 1280, 624],
+      ["http://developers.heyzap.com/imgsrv/img:569e892472c9d51b2f022c3622602f75", 720, 800],
+      ["http://developers.heyzap.com/imgsrv/img:a1c0543f6e36c999ece1f527e6b06432", 705, 304],
+      ["http://developers.heyzap.com/imgsrv/img:cea86c2fe513f3cd6e457cda83c2e3dd", 1280, 624],
+      ["http://developers.heyzap.com/imgsrv/img:6ed15cb2ecd4f080a9a200e7513b5bd6", 1280, 624],
+      ["http://developers.heyzap.com/imgsrv/img:979ed79d987b5a7122c3328c93968162", 720, 800],
+
+      ["http://developers.heyzap.com/imgsrv/img:3a2951de38f8e447e40050a72db51bb4", 1280, 624],
+      ["http://developers.heyzap.com/imgsrv/img:7bb81eeba489c61a8ceb5ec321ecb87c", 720, 800],
+
+      ["http://developers.heyzap.com/imgsrv/img:439f24769efa10f4a42b2ac992b79b47", 1280, 624],
+      ["http://developers.heyzap.com/imgsrv/img:d79948c5cc1aae6ffb3cdc11fef94bd9", 720, 800],
+
+      ["http://developers.heyzap.com/imgsrv/img:cd3ecefe77f282267a15de741bc1c920", 1280, 624],
+      ["http://developers.heyzap.com/imgsrv/img:045a212d409ecc872fb3b1f9303d8f5e", 720, 800],
+
+    ];
+
+    var Mockup = React.createClass({
+      render: function() {
+        /* var phoneAR = this.props.info.phone.width / this.props.info.phone.height;
+        var imageAR = this.props.info.image.width / this.props.info.image.height; */
+
+        var phoneStyles = this.props.info.phone;
+
+        var imageHeight = this.props.info.phone.height - this.props.info.bar.height;
+        var imageWidth = Math.round(this.props.info.image.width * imageHeight / this.props.info.image.height);
+        var containerHeight = this.props.info.phone.height;
+
+        var margin;
+
+        if (imageWidth > this.props.info.phone.width) {
+          imageWidth = this.props.info.phone.width;
+          imageHeight = Math.round(this.props.info.image.height * imageWidth / this.props.info.image.width);
+          containerHeight = imageHeight + this.props.info.bar.height;
+          margin = ((this.props.info.phone.height - containerHeight) / 4) + "px" + " 0px";
+        } else {
+          margin = "auto";
+        }
+
+        var containerStyles = {height: containerHeight, width: imageWidth, margin: margin};
+        var imageStyles = {height: imageHeight, width: imageWidth, "background-image": "url('" + INFO.image.url + "')"};
+        var barStyles = {height: this.props.info.bar.height, width: imageWidth};
+
+        return (
+          <div>
+            <span className="name">{INFO.phone.name}</span>
+            <span className="dimensions">{INFO.phone.width}x{INFO.phone.height}</span>
+
+            <div className="phonescreen" style={phoneStyles}>
+              <div className="container" style={containerStyles}>
+                <div className="image" style={imageStyles}>
+                  <span className="dim">container: {containerStyles.width} x {containerStyles.height}</span>
+                  <br />
+                  <span className="dim">image: {imageStyles.width} x {imageStyles.height}</span>
+                </div>
+                <div className="bar" style={barStyles}>
+                  <span className="dim">bottom bar: {barStyles.width} x {barStyles.height}</span>
+                </div>
+              </div>
+            </div>
+            <Controls />
+              <PhoneSelection />
+                <ImageSelection />
+          </div>
+        );
+      }
+    });
+
+    var Thumbnail = React.createClass({
+      handleClick: function() {
+        INFO.image = {
+          url: this.props.url,
+          width: this.props.width / 2,
+          height: this.props.height / 2
+        }
+        rerender();
+      },
+
+      render: function() {
+        return <img src={this.props.url} className="thumbnail" onClick={this.handleClick} />;
+      }
+    });
+
+    var ImageSelection = React.createClass({
+      render: function() {
+        var images = IMAGES.map(function(e, i) {
+          var url = e[0];
+          var width = e[1];
+          var height = e[2];
+
+          return <Thumbnail url={url} width={width} height={height}></Thumbnail>
+          });
+
+        return (
+          <div className="image-selection">
+            {images}
+          </div>
+        );
+      }
+    });
+
+    var Phone = React.createClass({
+      handleClick: function() {
+        if (this.props.width > 1200 || this.props.height > 900) {
+          INFO.phone = {
+            name: this.props.name,
+            width: this.props.width / 2,
+            height: this.props.height / 2
+          }
+        } else {
+          INFO.phone = {
+            name: this.props.name,
+            width: this.props.width,
+            height: this.props.height
+          }
+        }
+        rerender();
+      },
+
+      render: function() {
+        return <button className="phone" onClick={this.handleClick}>{this.props.name}</button>;
+      }
+    });
+
+    var PhoneSelection = React.createClass({
+      render: function() {
+        var phones = PHONES.map(function(e, i) {
+          var name = e[0];
+          var width = e[1];
+          var height = e[2];
+
+          return <Phone name={name} width={width} height={height}></Phone>
+          });
+
+        return (
+          <div className="phone-selection">
+            {phones}
+          </div>
+        );
+      }
+    });
+
+    var Controls = React.createClass({
+      helper: function(param) {
+        return function(event) {
+          var val = event.target.value;
+
+          if (param === "image.height") {
+            INFO.image.height = val;
+          }
+
+          if (param === "image.width") {
+            INFO.image.width = val;
+          }
+
+          rerender();
+        }
+      },
+
+      render: function() {
+        return (
+          <div className="controls">
+            <p>
+              Image width: <input type="range" name="quantity" min="400" max="2000" value={INFO.image.width} onChange={this.helper("image.width")} /> {INFO.image.width}
+            </p>
+            <p>
+              Image height: <input type="range" name="quantity" min="400" max="2000" value={INFO.image.height} onChange={this.helper("image.height")} /> {INFO.image.height}
+            </p>
+          </div>
+        );
+      }
+    });
+
+    function rerender() {
+      React.renderComponent(
+        <Mockup info={INFO}></Mockup>,
+        document.getElementById('everything')
+      );
+    }
+
+    rerender();
+  </script>
+
+</html>
