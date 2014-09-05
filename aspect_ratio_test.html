@@ -6,17 +6,39 @@
     <style>
       html {
         padding: 2px 15px;
-        background-color: #444;
-        color: white;
+        background-color: #555;
+        color: #fff;
       }
 
-      .phonescreen {
-        background-color: black;
+      .phone {
         overflow: hidden;
       }
 
       .container {
         background-color: #ccc;
+      }
+
+      .phone.landscape {
+        border-image: url("iphone_landscape.png") 31 141 36 147 stretch;
+        border-width: 31 141 36 147;
+      }
+
+      .phone.portrait {
+        border-image: url("iphone_portrait.png") 147 31 141 36 stretch;
+        border-width: 147 31 141 36;
+      }
+
+      .phonescreen {
+        background: url("candy_crush_portrait.png");
+        background-size: cover;
+      }
+
+      .landscape .phonescreen {
+        background: url("tiny_wings_landscape.jpg") 100% 100%;
+      }
+
+      .phonescreen-overlay {
+        background-color: rgba(0, 0, 0, 0.75);
       }
 
       .creative {
@@ -36,8 +58,8 @@
       }
 
       span.dim {
-        background-color: rgba(00, 0, 0, 0.5);
-        color: white;
+        display: none;
+        background-color: rgba(00, 0, 0, 0.65);
         font-size: 12px;
         font-family: monospace;
         padding: 2px;
@@ -61,7 +83,6 @@
 
       span.dimensions {
         margin-left: 8px;
-        color: white;
       }
 
       button.phone {
@@ -177,7 +198,7 @@
         }
 
         if (INFO.phone.shrink) {
-          var area = 400000;
+          var area = 100000;
           var ratio = phoneStyles.width / phoneStyles.height;
 
           phoneStyles.height = Math.round(Math.sqrt(area / ratio));
@@ -206,7 +227,8 @@
         var containerStyles = {height: containerHeight, width: imageWidth};
 
         if (marginTop) {
-          containerStyles["margin-top"] = marginTop;
+          containerStyles.position = "relative";
+          containerStyles["top"] = marginTop;
         } else {
           containerStyles.margin = margin;
         }
@@ -233,6 +255,12 @@
 
         phoneContents = INFO.iframeUrl ? iframe : testDesign;
 
+        var classSet = React.addons.classSet({
+          phone: true,
+          landscape: INFO.phone.landscape,
+          portrait: !INFO.phone.landscape,
+        });
+
         return (
           <div>
             <div className="title">
@@ -246,8 +274,12 @@
               </button>
             </div>
 
-            <div className="phonescreen" style={phoneStyles}>
-              {phoneContents}
+            <div className={classSet} style={phoneStyles}>
+              <div className="phonescreen" style={phoneStyles}>
+                <div className="phonescreen-overlay" style={phoneStyles}>
+                  {phoneContents}
+                </div>
+              </div>
             </div>
 
             <div className="controls">
