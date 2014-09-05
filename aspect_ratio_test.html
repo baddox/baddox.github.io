@@ -5,13 +5,14 @@
 
     <style>
       html {
-        padding: 10px;
-        background-color: #555;
+        padding: 2px 15px;
+        background-color: #444;
+        color: white;
       }
 
       .phonescreen {
         background-color: black;
-        overflow: auto;
+        overflow: hidden;
       }
 
       .container {
@@ -55,7 +56,6 @@
 
       span.name {
         margin: 4px;
-        color: white;
         font-weight: normal;
       }
 
@@ -68,6 +68,25 @@
         margin-right: 6px;
         font-size: 12px;
       }
+
+      .rotate, .shrink {
+        margin-left: 20px;
+      }
+
+      .title {
+        margin-bottom: 10px;
+      }
+
+      .url {
+        width: 500px;
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
     </style>
 
   </head>
@@ -81,27 +100,24 @@
     /** @jsx React.DOM */
 
     var PHONES = [
-      ["iPhone 5 Landscape", 1136, 640],
-      ["iPhone 5 Portrait", 640, 1136],
+      ["iPhone 5", 1136, 640],
+      ["iPhone 4s", 960, 640],
+      ["iPad", 1024, 768],
+      ["Galaxy S4", 1920, 1080],
+      ["Droid Incredible", 800, 480]
+    ];
 
-      ["iPhone 4s Landscape", 960, 640],
-      ["iPhone 4s Portrait", 640, 960],
-
-      ["iPad Landscape", 2048, 1536],
-      ["iPad Portrait", 1536, 2048],
-
-      ["Galaxy S4 Landscape", 1920, 1080],
-      ["Galaxy S4 Portrait", 1080, 1920],
-
-      ["Droid Incredible Landscape", 800, 480],
-      ["Droid Incredible Portrait", 480, 800],
+    var URLS = [
+      {name: "new bottom bar design", url: "http://www.stage-five.heyzap.com/new_ad_format"},
     ];
 
     var INFO = {
       phone: {
-        name: "iPhone 5 Landscape",
+        name: "iPhone 5",
         width: 1136,
-        height: 640
+        height: 640,
+        landscape: true,
+        shrink: true
       },
       image: {
         url: "http://developers.heyzap.com/imgsrv/img:9cd616cbe4ba3c0a16e0f490e0a672f1",
@@ -111,6 +127,7 @@
       bar: {
         height: 100 / 2
       },
+      iframeUrl: null,
     };
 
     var IMAGES = [
@@ -137,25 +154,51 @@
     ];
 
     var Mockup = React.createClass({
+      rotate: function() {
+        INFO.phone.landscape = !INFO.phone.landscape;
+        rerender();
+      },
+
+      toggleShrink: function() {
+        INFO.phone.shrink = !INFO.phone.shrink;
+        rerender();
+      },
+
       render: function() {
-        /* var phoneAR = this.props.info.phone.width / this.props.info.phone.height;
-        var imageAR = this.props.info.image.width / this.props.info.image.height; */
+        var phoneStyles = {
+          width: INFO.phone.width,
+          height: INFO.phone.height,
+        };
 
-        var phoneStyles = this.props.info.phone;
+        if (!INFO.phone.landscape) {
+          var width = phoneStyles.width;
+          phoneStyles.width = phoneStyles.height;
+          phoneStyles.height = width;
+        }
 
-        var imageHeight = this.props.info.phone.height - this.props.info.bar.height;
-        var imageWidth = Math.round(this.props.info.image.width * imageHeight / this.props.info.image.height);
-        var containerHeight = this.props.info.phone.height;
+        if (INFO.phone.shrink) {
+          var area = 400000;
+          var ratio = phoneStyles.width / phoneStyles.height;
+
+          phoneStyles.height = Math.round(Math.sqrt(area / ratio));
+          phoneStyles.width = Math.round(phoneStyles.height * ratio);
+        }
+
+        console.log("phoneStyles", phoneStyles);
+
+        var imageHeight = phoneStyles.height - INFO.bar.height;
+        var imageWidth = Math.round(INFO.image.width * imageHeight / INFO.image.height);
+        var containerHeight = phoneStyles.height;
 
         var margin;
         var marginTop;
 
-        if (imageWidth > this.props.info.phone.width) {
-          imageWidth = this.props.info.phone.width;
-          imageHeight = Math.round(this.props.info.image.height * imageWidth / this.props.info.image.width);
-          console.log("imageHeight", this.props.info.image.height, imageWidth, this.props.info.image.width);
-          containerHeight = imageHeight + this.props.info.bar.height;
-          marginTop = ((this.props.info.phone.height - containerHeight) / 2) + "px";
+        if (imageWidth > phoneStyles.width) {
+          imageWidth = phoneStyles.width;
+          imageHeight = Math.round(INFO.image.height * imageWidth / INFO.image.width);
+          console.log("imageHeight", INFO.image.height, imageWidth, INFO.image.width);
+          containerHeight = imageHeight + INFO.bar.height;
+          marginTop = ((phoneStyles.height - containerHeight) / 2) + "px";
         } else {
           margin = "auto";
         }
@@ -167,30 +210,52 @@
         } else {
           containerStyles.margin = margin;
         }
-        
+
         var imageStyles = {height: imageHeight, width: imageWidth, "background-image": "url('" + INFO.image.url + "')"};
-        var barStyles = {height: this.props.info.bar.height, width: imageWidth};
+        var barStyles = {height: INFO.bar.height, width: imageWidth};
+
+        var testDesign = (
+          <div className="container" style={containerStyles}>
+            <div className="image" style={imageStyles}>
+              <span className="dim">container: {containerStyles.width} x {containerStyles.height}</span>
+              <br />
+              <span className="dim">image: {imageStyles.width} x {imageStyles.height}</span>
+            </div>
+            <div className="bar" style={barStyles}>
+              <span className="dim">bottom bar: {barStyles.width} x {barStyles.height}</span>
+            </div>
+          </div>
+        );
+
+        var iframe = (
+          <iframe src={INFO.iframeUrl} frameBorder="0" scrolling="no"></iframe>
+        );
+
+        phoneContents = INFO.iframeUrl ? iframe : testDesign;
 
         return (
           <div>
-            <span className="name">{INFO.phone.name}</span>
-            <span className="dimensions">{INFO.phone.width}x{INFO.phone.height}</span>
+            <div className="title">
+              <span className="name">{INFO.phone.name}</span>
+              <span className="dimensions">{INFO.phone.width}x{INFO.phone.height}</span>
+              <button className="rotate" onClick={this.rotate}>
+                Rotate
+              </button>
+              <button className="shrink" onClick={this.toggleShrink}>
+                Toggle shrinkage
+              </button>
+            </div>
 
             <div className="phonescreen" style={phoneStyles}>
-              <div className="container" style={containerStyles}>
-                <div className="image" style={imageStyles}>
-                  <span className="dim">container: {containerStyles.width} x {containerStyles.height}</span>
-                  <br />
-                  <span className="dim">image: {imageStyles.width} x {imageStyles.height}</span>
-                </div>
-                <div className="bar" style={barStyles}>
-                  <span className="dim">bottom bar: {barStyles.width} x {barStyles.height}</span>
-                </div>
-              </div>
+              {phoneContents}
             </div>
-            <Controls></Controls>
-            <PhoneSelection></PhoneSelection>
-            <ImageSelection></ImageSelection>
+
+            <div className="controls">
+              <Controls></Controls>
+              <PhoneSelection></PhoneSelection>
+              <ImageSelection></ImageSelection>
+              <UrlSelection></UrlSelection>
+            </div>
           </div>
         );
       }
@@ -231,19 +296,10 @@
 
     var Phone = React.createClass({
       handleClick: function() {
-        if (this.props.width > 1200 || this.props.height > 900) {
-          INFO.phone = {
-            name: this.props.name,
-            width: this.props.width / 2,
-            height: this.props.height / 2
-          }
-        } else {
-          INFO.phone = {
-            name: this.props.name,
-            width: this.props.width,
-            height: this.props.height
-          }
-        }
+        INFO.phone.name = this.props.name;
+        INFO.phone.width = this.props.width;
+        INFO.phone.height = this.props.height;
+
         rerender();
       },
 
@@ -255,16 +311,61 @@
     var PhoneSelection = React.createClass({
       render: function() {
         var phones = PHONES.map(function(e, i) {
+          console.log("e", e);
           var name = e[0];
+          console.log("name", name);
           var width = e[1];
+          console.log("width", width);
           var height = e[2];
+          console.log("done");
 
-          return <Phone name={name} width={width} height={height}></Phone>
-          });
+          return (
+            <Phone name={name} width={width} height={height}></Phone>
+          );
+        });
 
         return (
           <div className="phone-selection">
             {phones}
+          </div>
+        );
+      }
+    });
+
+    var Url = React.createClass({
+      handleClick: function() {
+        INFO.iframeUrl = this.props.url;
+        rerender();
+      },
+
+      render: function() {
+        return (
+          <p>
+            <button onClick={this.handleClick}>{this.props.name}</button>
+          </p>
+        )
+      }
+    });
+
+    var UrlSelection = React.createClass({
+      handleChange: function() {
+        INFO.iframeUrl = event.target.value;
+        rerender();
+      },
+
+      render: function() {
+        var urls = URLS.map(function(url, i) {
+          return (
+            <Url name={url.name} url={url.url}></Url>
+          );
+        });
+
+        return (
+          <div className="phone-selection">
+            <p>
+              current url: <input type="text" className="url" value={INFO.iframeUrl} onChange={this.handleChange} />
+            </p>
+            {urls}
           </div>
         );
       }
@@ -311,6 +412,7 @@
     });
 
     function rerender() {
+      console.log(INFO.phone);
       React.renderComponent(
         <Mockup info={INFO}></Mockup>,
         document.getElementById('everything')
