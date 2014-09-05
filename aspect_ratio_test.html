@@ -151,6 +151,19 @@
       iframeUrl: null,
     };
 
+    var SHRINK_AREA = 300000;
+
+    var BORDER = {
+      top: {
+        width: 410,
+        height: 147,
+      },
+      bottom: {
+        width: 410,
+        height: 141,
+      },
+    };
+
     var IMAGES = [
       ["https://s3.amazonaws.com/uploads.hipchat.com/1658/29538/QX7jni7e3hMHK4J/skinny.jpg", 188, 325],
       ["https://s3.amazonaws.com/uploads.hipchat.com/1658/29538/FqPmunEb2QVrOyu/fat.jpg", 800, 303],
@@ -198,16 +211,26 @@
         }
 
         if (INFO.phone.shrink) {
-          var area = 100000;
+          var area = SHRINK_AREA;
           var ratio = phoneStyles.width / phoneStyles.height;
 
           phoneStyles.height = Math.round(Math.sqrt(area / ratio));
           phoneStyles.width = Math.round(phoneStyles.height * ratio);
         }
 
+        var borderEdges = 31 + 36;
+        if (INFO.phone.landscape) {
+          phoneStyles["border-left-width"] = (phoneStyles.height + borderEdges) * BORDER.top.height / BORDER.top.width;
+          phoneStyles["border-right-width"] = (phoneStyles.height + borderEdges) * BORDER.bottom.height / BORDER.bottom.width;
+        } else {
+          phoneStyles["border-top-width"] = (phoneStyles.width + borderEdges) * BORDER.top.height / BORDER.top.width;
+          phoneStyles["border-bottom-width"] = (phoneStyles.width + borderEdges) * BORDER.bottom.height / BORDER.bottom.width;
+        }
+
         console.log("phoneStyles", phoneStyles);
 
-        var scaledBarHeight = INFO.bar.height * phoneStyles.width / INFO.phone.width;
+        var scaleFactor = phoneStyles.width / INFO.phone.width;
+        var scaledBarHeight = INFO.bar.height * scaleFactor;
 
         var imageHeight = phoneStyles.height - scaledBarHeight;
         var imageWidth = Math.round(INFO.image.width * imageHeight / INFO.image.height);
