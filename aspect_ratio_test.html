@@ -6,7 +6,7 @@
     <style>
       html {
         padding: 2px 15px;
-        background-color: #555;
+        background-color: #777;
         color: #fff;
       }
 
@@ -146,7 +146,7 @@
         height: 720
       },
       bar: {
-        height: 100 / 2
+        height: 100
       },
       iframeUrl: null,
     };
@@ -207,7 +207,9 @@
 
         console.log("phoneStyles", phoneStyles);
 
-        var imageHeight = phoneStyles.height - INFO.bar.height;
+        var scaledBarHeight = INFO.bar.height * phoneStyles.width / INFO.phone.width;
+
+        var imageHeight = phoneStyles.height - scaledBarHeight;
         var imageWidth = Math.round(INFO.image.width * imageHeight / INFO.image.height);
         var containerHeight = phoneStyles.height;
 
@@ -218,7 +220,7 @@
           imageWidth = phoneStyles.width;
           imageHeight = Math.round(INFO.image.height * imageWidth / INFO.image.width);
           console.log("imageHeight", INFO.image.height, imageWidth, INFO.image.width);
-          containerHeight = imageHeight + INFO.bar.height;
+          containerHeight = imageHeight + scaledBarHeight;
           marginTop = ((phoneStyles.height - containerHeight) / 2) + "px";
         } else {
           margin = "auto";
@@ -234,7 +236,7 @@
         }
 
         var imageStyles = {height: imageHeight, width: imageWidth, "background-image": "url('" + INFO.image.url + "')"};
-        var barStyles = {height: INFO.bar.height, width: imageWidth};
+        var barStyles = {height: scaledBarHeight, width: imageWidth};
 
         var testDesign = (
           <div className="container" style={containerStyles}>
