@@ -185,6 +185,7 @@
       ["http://developers.heyzap.com/imgsrv/img:cd3ecefe77f282267a15de741bc1c920", 1280, 624],
       ["http://developers.heyzap.com/imgsrv/img:045a212d409ecc872fb3b1f9303d8f5e", 720, 800],
 
+      ["http://a4.mzstatic.com/us/r30/Purple4/v4/1a/63/fb/1a63fb9f-b26b-117a-549a-8104a464c466/screen568x568.jpeg", 320, 568],
     ];
 
     var Mockup = React.createClass({
@@ -455,13 +456,13 @@
         return (
           <div className="controls">
             <p>
-              Phone width: <input type="range" name="quantity" min="5" max="2000" value={INFO.phone.width} onChange={this.helper("phone.width")} /> {INFO.phone.width}
+              Phone width: <input type="range" name="quantity" min="100" max="2000" value={INFO.phone.width} onChange={this.helper("phone.width")} /> {INFO.phone.width}
             </p>
             <p>
-              Phone height: <input type="range" name="quantity" min="5" max="2000" value={INFO.phone.height} onChange={this.helper("phone.height")} /> {INFO.phone.height}
+              Phone height: <input type="range" name="quantity" min="100" max="2000" value={INFO.phone.height} onChange={this.helper("phone.height")} /> {INFO.phone.height}
             </p>
             <p>
-              Bottom bar height: <input type="range" name="quantity" min="5" max="200" value={INFO.bar.height} onChange={this.helper("bar.height")} /> {INFO.bar.height}
+              Bottom bar height: <input type="range" name="quantity" min="0" max="800" value={INFO.bar.height} onChange={this.helper("bar.height")} /> {INFO.bar.height}
             </p>
           </div>
         );
