@@ -8,6 +8,8 @@
         padding: 2px 15px;
         background-color: #777;
         color: #fff;
+        font-family: sans-serif;
+        font-size: 14px;
       }
 
       .phone {
@@ -72,8 +74,10 @@
       .thumbnail {
         max-width: 100px;
         max-height: 100px;
-        margin-right: 8px;
+        margin-left: 12px;
+        margin-bottom: 18px;
         cursor: pointer;
+        vertical-align: top;
       }
 
       span.name {
@@ -106,6 +110,20 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
+      }
+
+      .image-selection {
+        margin-top: 20px;
+      }
+      
+      .image-section {
+        margin-right: 20px;
+        font-size: 12px;
+      }
+
+      input[type="range"] {
+        width: 800px;
+        max-width: 75%;
       }
 
     </style>
@@ -165,27 +183,37 @@
     };
 
     var IMAGES = [
-      ["https://s3.amazonaws.com/uploads.hipchat.com/1658/29538/QX7jni7e3hMHK4J/skinny.jpg", 188, 325],
-      ["https://s3.amazonaws.com/uploads.hipchat.com/1658/29538/FqPmunEb2QVrOyu/fat.jpg", 800, 303],
+      ["Portrait True 16:9", [
+        ["http://a4.mzstatic.com/us/r30/Purple4/v4/1a/63/fb/1a63fb9f-b26b-117a-549a-8104a464c466/screen568x568.jpeg", 320, 568],
+      ]],
 
-      ["http://developers.heyzap.com/imgsrv/img:9cd616cbe4ba3c0a16e0f490e0a672f1", 1280, 624],
-      ["http://developers.heyzap.com/imgsrv/img:6eda5ea19dd9f3f41b6ffcba846bd185", 1280, 624],
-      ["http://developers.heyzap.com/imgsrv/img:569e892472c9d51b2f022c3622602f75", 720, 800],
-      ["http://developers.heyzap.com/imgsrv/img:a1c0543f6e36c999ece1f527e6b06432", 705, 304],
-      ["http://developers.heyzap.com/imgsrv/img:cea86c2fe513f3cd6e457cda83c2e3dd", 1280, 624],
-      ["http://developers.heyzap.com/imgsrv/img:6ed15cb2ecd4f080a9a200e7513b5bd6", 1280, 624],
-      ["http://developers.heyzap.com/imgsrv/img:979ed79d987b5a7122c3328c93968162", 720, 800],
+      ["Heyzap Portrait 9:10", [
+        ["http://developers.heyzap.com/imgsrv/img:569e892472c9d51b2f022c3622602f75", 720, 800],
+        ["http://developers.heyzap.com/imgsrv/img:979ed79d987b5a7122c3328c93968162", 720, 800],
+        ["http://developers.heyzap.com/imgsrv/img:7bb81eeba489c61a8ceb5ec321ecb87c", 720, 800],
+        ["http://developers.heyzap.com/imgsrv/img:d79948c5cc1aae6ffb3cdc11fef94bd9", 720, 800],
+        ["http://developers.heyzap.com/imgsrv/img:045a212d409ecc872fb3b1f9303d8f5e", 720, 800],
+      ]],
 
-      ["http://developers.heyzap.com/imgsrv/img:3a2951de38f8e447e40050a72db51bb4", 1280, 624],
-      ["http://developers.heyzap.com/imgsrv/img:7bb81eeba489c61a8ceb5ec321ecb87c", 720, 800],
+      ["Hypothetical Extreme Portrait 188x325", [
+        ["https://s3.amazonaws.com/uploads.hipchat.com/1658/29538/QX7jni7e3hMHK4J/skinny.jpg", 188, 325],
+      ]],
 
-      ["http://developers.heyzap.com/imgsrv/img:439f24769efa10f4a42b2ac992b79b47", 1280, 624],
-      ["http://developers.heyzap.com/imgsrv/img:d79948c5cc1aae6ffb3cdc11fef94bd9", 720, 800],
+      ["Landscape True 16:9", [
+        ["clash_landscape_16x9.png", 500, 281],
+      ]],
 
-      ["http://developers.heyzap.com/imgsrv/img:cd3ecefe77f282267a15de741bc1c920", 1280, 624],
-      ["http://developers.heyzap.com/imgsrv/img:045a212d409ecc872fb3b1f9303d8f5e", 720, 800],
-
-      ["http://a4.mzstatic.com/us/r30/Purple4/v4/1a/63/fb/1a63fb9f-b26b-117a-549a-8104a464c466/screen568x568.jpeg", 320, 568],
+      ["Heyzap Landscape 80:39 (lol) AKA 16:7.8 or 18.5:9", [
+        ["http://developers.heyzap.com/imgsrv/img:9cd616cbe4ba3c0a16e0f490e0a672f1", 1280, 624],
+        ["http://developers.heyzap.com/imgsrv/img:6eda5ea19dd9f3f41b6ffcba846bd185", 1280, 624],
+        ["http://developers.heyzap.com/imgsrv/img:a1c0543f6e36c999ece1f527e6b06432", 705, 304],
+        ["http://developers.heyzap.com/imgsrv/img:cea86c2fe513f3cd6e457cda83c2e3dd", 1280, 624],
+        ["http://developers.heyzap.com/imgsrv/img:6ed15cb2ecd4f080a9a200e7513b5bd6", 1280, 624],
+        ["http://developers.heyzap.com/imgsrv/img:3a2951de38f8e447e40050a72db51bb4", 1280, 624],
+        ["http://developers.heyzap.com/imgsrv/img:439f24769efa10f4a42b2ac992b79b47", 1280, 624],
+        ["http://developers.heyzap.com/imgsrv/img:cd3ecefe77f282267a15de741bc1c920", 1280, 624],
+        ["https://s3.amazonaws.com/uploads.hipchat.com/1658/29538/FqPmunEb2QVrOyu/fat.jpg", 800, 303],
+      ]],
     ];
 
     var Mockup = React.createClass({
@@ -205,18 +233,21 @@
           height: INFO.phone.height,
         };
 
-        if (!INFO.phone.landscape) {
-          var width = phoneStyles.width;
-          phoneStyles.width = phoneStyles.height;
-          phoneStyles.height = width;
-        }
-
         if (INFO.phone.shrink) {
           var area = SHRINK_AREA;
           var ratio = phoneStyles.width / phoneStyles.height;
 
           phoneStyles.height = Math.round(Math.sqrt(area / ratio));
           phoneStyles.width = Math.round(phoneStyles.height * ratio);
+        }
+
+        var scaleFactor = phoneStyles.width / INFO.phone.width;
+        var scaledBarHeight = INFO.bar.height * scaleFactor;
+
+        if (!INFO.phone.landscape) {
+          var width = phoneStyles.width;
+          phoneStyles.width = phoneStyles.height;
+          phoneStyles.height = width;
         }
 
         var borderEdges = 31 + 36;
@@ -229,9 +260,6 @@
         }
 
         console.log("phoneStyles", phoneStyles);
-
-        var scaleFactor = phoneStyles.width / INFO.phone.width;
-        var scaledBarHeight = INFO.bar.height * scaleFactor;
 
         var imageHeight = phoneStyles.height - scaledBarHeight;
         var imageWidth = Math.round(INFO.image.width * imageHeight / INFO.image.height);
@@ -336,17 +364,30 @@
 
     var ImageSelection = React.createClass({
       render: function() {
-        var images = IMAGES.map(function(e, i) {
-          var url = e[0];
-          var width = e[1];
-          var height = e[2];
+        var sections = IMAGES.map(function(array, i) {
+          var title = array[0];
+          var images = array[1];
 
-          return <Thumbnail url={url} width={width} height={height}></Thumbnail>
+          var thumbnails = images.map(function(e) {
+            var url = e[0];
+            var width = e[1];
+            var height = e[2];
+            
+            return <Thumbnail url={url} width={width} height={height} key={url}></Thumbnail>
           });
+
+          return (
+            <span className="image-section">
+              <span>{title}:</span>
+              {thumbnails}
+            </span>
+          );
+
+        });
 
         return (
           <div className="image-selection">
-            {images}
+            {sections}
           </div>
         );
       }
@@ -419,7 +460,7 @@
         });
 
         return (
-          <div className="phone-selection">
+          <div className="url-selection">
             <p>
               current url: <input type="text" className="url" value={INFO.iframeUrl} onChange={this.handleChange} />
             </p>
@@ -462,7 +503,7 @@
               Phone height: <input type="range" name="quantity" min="100" max="2000" value={INFO.phone.height} onChange={this.helper("phone.height")} /> {INFO.phone.height}
             </p>
             <p>
-              Bottom bar height: <input type="range" name="quantity" min="0" max="800" value={INFO.bar.height} onChange={this.helper("bar.height")} /> {INFO.bar.height}
+              Bottom bar height: <input type="range" name="quantity" min="0" max="500" value={INFO.bar.height} onChange={this.helper("bar.height")} /> {INFO.bar.height}
             </p>
           </div>
         );
