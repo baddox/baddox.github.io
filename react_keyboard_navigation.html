@@ -1,0 +1,209 @@
+<html>
+  <head>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/react/0.11.1/JSXTransformer.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/react/0.11.1/react-with-addons.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/keymaster/1.6.1/keymaster.js"></script>
+
+    <style>
+      body {
+        margin: 22px;
+      }
+      
+      .row {
+        margin-bottom: 20px;
+      }
+
+      .row-title {
+        margin-bottom: 10px;
+      }
+
+      .row-highlighted {
+        text-decoration: underline;
+      }
+
+      .item {
+        padding: 4px 8px;
+        margin-left: 8px;
+      }
+
+      .item.highlighted {
+        background-color: khaki;
+      }
+
+      .item.activated {
+        background-color: orangered;
+      }
+
+      #info {
+        font-size: 14px;
+        margin-top: 80px;
+      }
+    </style>
+
+    <script type="text/jsx">
+      /** @jsx React.DOM */
+
+      var Item = React.createClass({
+        componentDidMount: function() {
+          key("enter", this.handleEnterPressed);
+        },
+
+        handleEnterPressed: function() {
+          if (!this.props.highlighted) return;
+
+          this.state.activated = true;
+          this.setState(this.state);
+
+          setTimeout(function() {
+            this.state.activated = false;
+            this.setState(this.state);
+          }.bind(this), 200);
+        },
+
+        getInitialState: function() {
+          return {
+            activated: false
+          };
+        },
+
+        render: function() {
+          var classSet = React.addons.classSet({
+            "item": true,
+            "highlighted": this.props.highlighted,
+            "activated": this.state.activated
+          });
+
+          return (
+            <small className={classSet}><code>Item {this.props.rowNum}.{this.props.num}</code></small>
+          );
+        }
+      });
+
+      var Row = React.createClass({
+        componentDidMount: function() {
+          key("right", this.handleRightPressed);
+        },
+
+        handleRightPressed: function() {
+          if (!this.props.highlighted) return;
+
+          this.state.highlightedItem = (this.state.highlightedItem + 1) % this.itemCount();
+          this.setState(this.state);
+        },
+
+        getInitialState: function() {
+          return {
+            highlightedItem: 0
+          };
+        },
+
+        componentWillReceiveProps: function(nextProps) {
+          if (nextProps.highlighted !== this.props.highlighted) {
+            this.state.highlightedItem = 0;
+            this.setState(this.state);
+          }
+        },
+
+        itemCount: function() {
+          return 4;
+        },
+
+        render: function() {
+          var items = [0, 1, 2, 3].map(function(num, i) {
+            var highlighted = this.props.highlighted && this.state.highlightedItem === i;
+            return <Item num={num} rowNum={this.props.num} highlighted={highlighted} />;
+          }.bind(this));
+
+          var classSet = React.addons.classSet({
+            "row-title": true,
+            "row-highlighted": this.props.highlighted,
+          });
+
+          return (
+            <div className="row">
+              <div className={classSet}>Row {this.props.num}</div>
+              <div>{items}</div>
+            </div>
+          );
+        }
+      });
+
+      var List = React.createClass({
+        componentDidMount: function() {
+          key("enter", this.handleEnterPressed);
+          key("down", this.handleDownPressed);
+          key("esc", this.handleEscPressed);
+        },
+
+        handleEnterPressed: function() {
+          this.state.highlighted = true;
+          this.setState(this.state);
+        },
+
+        handleDownPressed: function() {
+          if (!this.state.highlighted) return;
+
+          this.state.highlightedRow = (this.state.highlightedRow + 1) % this.rowCount();
+          this.setState(this.state);
+        },
+
+        handleEscPressed: function() {
+          this.state.highlighted = false;
+          this.state.highlightedRow = 0;
+          this.setState(this.state);
+        },
+
+        getInitialState: function() {
+          return {
+            highlighted: false,
+            highlightedRow: 0
+          };
+        },
+
+        rowCount: function() {
+          return 5;
+        },
+
+        render: function() {
+          var rows = [0, 1, 2, 3, 4].map(function(num, i) {
+            var highlighted = this.state.highlighted && this.state.highlightedRow === i;
+            return <Row num={num} highlighted={highlighted} />;
+          }.bind(this));
+
+          return  (
+            <div className="list">
+              {rows}
+            </div>
+          );
+        }
+      });
+
+      React.renderComponent(
+        <List />,
+        document.getElementById("container")
+      );
+
+    </script>
+
+    <div id="container"></div>
+    
+    <div id="info">
+      <p>
+        The list starts in an unhighlighted state.
+      </p>
+      <p>
+        Pressing <code>Enter</code> the first time will put the list into a highlighted state, and the first item of the first row will be highlighted initially.
+      </p>
+      <p>
+        Pressing the <code>down</code> key moves between rows.
+      </p>
+      <p>
+        Pressing the <code>right</code> key moves between items with a row.
+      </p>
+      <p>
+        Pressing <code>Enter</code> will "activate" the currently highlighted row.
+      </p>
+      <p>
+        Pressing <code>Esc</code> will put everything back in the unhighlighted state.
+      </p>
+    </div>
