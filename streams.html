@@ -6,7 +6,7 @@ window.onload = () => {
   })
   .then((json) => {
     console.log(json);
-    alert(JSON.stringify(json, null, 2));
+    document.write(`<pre>${JSON.stringify(json, null, 2)}</pre>`);
   });
 };
 </script>
