@@ -1,7 +1,7 @@
 <html>
 <script>
 window.onload = () => {
-  fetch("https://golden.com/api/v1/organizations/").then((response) => {
+  fetch("https://golden.com/api/v1/organizations/", {credentials: 'include'}).then((response) => {
     return response.json();
   })
   .then((json) => {
