@@ -1,10 +1,7 @@
 <html>
 <script>
 window.onload = () => {
-  fetch(
-    "https://shaddox.staging.gold/api/v1/organizations/",
-    {credentials: 'include', mode: 'no-cors'}
-  ).then((response) => {
+  fetch("https://shaddox.staging.gold/api/v1/organizations/", {credentials: 'include', mode: 'no-cors'}).then((response) => {
     return response.json();
   })
   .then((json) => {
