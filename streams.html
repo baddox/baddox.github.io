@@ -2,7 +2,7 @@
 <script>
 window.onload = () => {
   fetch(
-    "https://shaddox.staging.gold/api/v1/organizations/",
+    "https://shaddox.staging.gold/api/v1/organizations/?format=json",
     {credentials: 'include', mode: 'no-cors'}
   ).then((response) => {
     return response.json();
