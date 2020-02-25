@@ -2,8 +2,8 @@
 <script>
 window.onload = () => {
   fetch(
-    "https://shaddox.staging.gold/api/v1/organizations/?format=json",
-    {credentials: 'include'}
+    "https://shaddox.staging.gold/api/v1/organizations/?format=json"//,
+    //{credentials: 'include'}
   ).then((response) => {
     return response.json();
   })
